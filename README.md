@@ -4,6 +4,8 @@ DBN (Design By Numbers) Language parser written in TypeScript, inspired by this 
 
 Draw in canvas by using simple language!
 
+[Demo](http://htmlpreview.github.io/?https://github.com/LancerComet/dbn-canvas/blob/master/index.html) is here.
+
 ## Usage.
 ```ruby
 # Draw in <canvas id="paper-canvas"></canvas>
