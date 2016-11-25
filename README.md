@@ -1,4 +1,4 @@
-# DBN-ts
+# DBN-Canvas
 
 DBN (Design By Numbers) Language parser written in TypeScript, inspired by this article: [How to be* a compiler — make a compiler with JavaScript](https://medium.com/@kosamari/how-to-be-a-compiler-make-a-compiler-with-javascript-4a8a13d473b4#.r832qh7i8)
 
