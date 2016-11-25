@@ -1,5 +1,5 @@
 /*
- * DBN.JS By LancerComet at 23:00, 2016.11.25.
+ * DBN-Canvas By LancerComet at 23:00, 2016.11.25.
  * # Carry Your World #
  */
 
