@@ -3,6 +3,10 @@
  * # Carry Your World #
  */
 
+// Define variable for DBN enviroument.
+var currentCanvas: HTMLCanvasElement = null
+var currentContext: CanvasRenderingContext2D = null
+
 /**
  * DBN Language Lexer.
  * 词法分析器.
@@ -106,8 +110,8 @@ function parser (tokens: Array<Token> = []) {
           continue
         }         
 
-        // The Line Express must used in this way:
-        // "Line startX startY endX endY"
+        // The Line Expression must used in this way:
+        // "Line START_X START_Y END_X END_Y"
         case 'Line': {
           let lineExpression = new Expression('Line')
           let currentTokenArgs = [ tokens.shift(), tokens.shift(), tokens.shift(), tokens.shift() ]
@@ -122,6 +126,9 @@ function parser (tokens: Array<Token> = []) {
           continue          
         }
 
+        // Use Expression defines the target canvas we would like to use
+        // and must be used in this way:
+        // "Use CANVAS_SELECTOR"
         case 'Use': {
           let useExpression = new Expression('Use')
           let currentTokenArg = tokens.shift()
@@ -183,6 +190,15 @@ class AST {
  */
 class Expression {
   type: string = 'CallExpression'
+
+  
+  /**
+   * The name of this expression.
+   * 
+   * @type {string}
+   * @example "Use"
+   * @memberOf Expression
+   */
   name: string
   arguments: Array<Literal> = []
 
@@ -228,7 +244,110 @@ class Literal {
   }
 }
 
+/**
+ * Run DBN code by providing ast.
+ * 
+ * @param {AST} ast
+ */
 function transformer (ast: AST) {
+  // Let's find what do we have in this ast.
+  while (ast.expressions.length > 0) {
+    const expression = ast.expressions.shift()
 
+    switch (expression.name) {
+      case 'Use': {
+        const useArg = expression.arguments[0].value
+        const canvasSelector = useArg.toString()
+
+        const targetCanvas = <HTMLCanvasElement> document.querySelector(canvasSelector)
+        if (!targetCanvas) {
+          throw new Error(`[Canvas Mismatch] There is no canvas called ${canvasSelector}`)
+        }
+
+        currentCanvas = targetCanvas
+        currentContext = targetCanvas.getContext('2d')
+        continue
+      }
+
+      case 'Paper': {
+        if (!currentCanvas) {
+          throw new Error('[Canvas Mismatch] You must use a canvas first.')
+        }
+
+        const paperArg = expression.arguments[0].value
+        const color = getColor(<number> paperArg)
+
+        currentContext.rect(0, 0, currentCanvas.width, currentCanvas.height)
+        currentContext.fillStyle = color
+        currentContext.fill()
+
+        continue        
+      }
+
+      case 'Pen': {
+        if (!currentCanvas) {
+          throw new Error('[Canvas Mismatch] You must use a canvas first.')
+        }
+
+        const penArg = expression.arguments[0].value
+        const color = getColor(<number> penArg)
+
+        currentContext.strokeStyle = color
+
+        continue
+      }
+
+      case 'Line': {
+        if (!currentCanvas) {
+          throw new Error('[Canvas Mismatch] You must use a canvas first.')
+        }
+
+        const lineArgs = expression.arguments
+        console.log(expression)
+        const start = {
+          x: <number> lineArgs[0].value,
+          y: <number> lineArgs[1].value
+        }
+        const end = {
+          x: <number> lineArgs[2].value,
+          y: <number> lineArgs[3].value
+        }
+        
+        currentContext.beginPath()
+        currentContext.moveTo(getLinePosition('width', start.x), getLinePosition('height', start.y))
+        currentContext.lineTo(getLinePosition('width', end.x), getLinePosition('height', end.y))
+        currentContext.stroke()       
+
+        continue
+      }
+    }
+  }
 }
 
+/**
+ * Get hex color.
+ * 
+ * @param {number} number
+ * @returns {string}
+ */
+function getColor (number: number) : string {
+  const hex = (Math.round(number / 100 * 255)).toString(16)
+  return `#${hex}${hex}${hex}`
+}
+
+/**
+ * Get canvas line position.
+ * 
+ * @param {("width" | "height")} type
+ * @param {number} length
+ * @returns {number}
+ */
+function getLinePosition (type: "width" | "height", length: number) : number {
+  return currentCanvas[type] * length / 100
+}
+
+// Start to run.
+const codes = document.querySelector('script[lang=dbn]').textContent
+const tokens = lexer(codes)
+const ast = parser(tokens)
+transformer(ast)

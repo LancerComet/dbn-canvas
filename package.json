@@ -1,19 +1,20 @@
 {
-  "name": "dbn-ts",
+  "name": "dbn-canvas",
   "version": "0.1.0",
-  "description": "DBN (Design By Numbers) Language parser written in TypeScript.",
-  "main": "index.js",
+  "description": "Use DBN (Design By Numbers) Language to draw in canvas. Written in TypeScript.",
+  "main": "build/dbn.js",
   "keywords": [
-    "DBN",
+    "dbn",
     "language",
+    "canvas",    
     "lexer",
     "parser",
     "typescript",
     "javascript"
   ],
   "scripts": {
-    "dev": "tsc dbn.ts --out dbn.js --watch",    
-    "build": "tsc dbn.ts --out dbn.js"
+    "dev": "tsc src/dbn.ts --out build/dbn.js --watch",    
+    "build": "tsc src/dbn.ts --out build/dbn.js"
   },
   "author": {
     "name": "LancerComet",

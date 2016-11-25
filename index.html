@@ -1,16 +1,65 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <title>DBN-Canvas in TypeScript.</title>
+    <style>
+      body {
+        font-family: "Microsoft Sans Serif";
+      }
+
+      h2 {
+        font-weight: 100;
+      }
+
+      code {
+        display: inline-block;
+        width: 200px;
+        padding: 10px;
+        margin: 0 10px;
+        background-color: lightyellow;
+        border: 1px solid sandybrown;
+        vertical-align: top;
+      }
+
+      code p {
+        margin: 10px 0;
+        color: chocolate;
+      }
+    </style>
   </head>
 
   <body>
-    <canvas id="dtn-canvas" width="500" height="500"></canvas>
-    <script src="./dbn.js"></script>
-    <script lang="dtn" type="text/dtn">
-      Use #dtn-canvas
+    <div>
+      <h2>DBN-Canvas in TypeScript.<br/><small>Draw in canvas by using simple language!</small></h2>
+      <p>DBN (Design By Numbers) Code:</p>
+      <code></code>
+      <canvas id="dbn-canvas" width="500" height="500"></canvas>            
+    </div>
+    <script lang="dbn" type="text/dbn">
+      Use #dbn-canvas
       Paper 0
-      Pen 100
-      Line 0 50 100 50
+      Pen 20
+      Line 10 10 90 90
+      Pen 40
+      Line 20 10 80 90
+      Pen 60      
+      Line 30 10 70 90
+      Pen 80      
+      Line 40 10 60 90
+      Pen 100      
+      Line 50 10 50 90
     </script>
+    <script src="./build/dbn.js"></script>
+    <script>
+      document.querySelector('script[lang=dbn]').textContent
+        .trim()
+        .split(/\n/)
+        .map(function (text) { return text.trim() })
+        .forEach(function (text) {
+          const p = document.createElement('p')
+          p.textContent = text
+          document.querySelector('code').appendChild(p)
+        })
+    </script>    
   </body>
 </html>
